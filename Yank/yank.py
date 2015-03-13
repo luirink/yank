@@ -392,7 +392,9 @@ class Yank(object):
 
             # Make sure each thread's random number generators have unique seeds.
             # TODO: Do we need to store seed in repex object?
-            seed = np.random.randint(sys.maxint - mpicomm.size) + mpicomm.rank
+            #seed = np.random.randint(sys.maxint - mpicomm.size) + mpicomm.rank
+            numpy_max = 4294967294
+            seed = (np.random.randint(sys.maxint - mpicomm.size) + mpicomm.rank ) % numpy_max
             np.random.seed(seed)
 
         # Run all phases sequentially.
