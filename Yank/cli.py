@@ -27,8 +27,8 @@ Usage:
   yank [-h | --help] [-c | --cite]
   yank selftest [-v | --verbose]
   yank platforms
-  yank prepare binding amber --setupdir=DIRECTORY --ligname=RESNAME (-s=STORE | --store=STORE) [-i=ITERATIONS | --iterations=ITERATIONS] [--restraints <restraint_type>] [--randomize-ligand] [--nbmethod=METHOD] [--gbsa=GBSA] [--constraints=CONSTRAINTS] [--platform=PLATFORM] [--temperature=TEMPERATURE] [--pressure=PRESSURE] [--minimize] [-v | --verbose]
-  yank prepare binding systembuilder --ligand=FILENAME --receptor=FILENAME [-i=ITERATIONS | --iterations=ITERATIONS] [--restraints <restraint_type>] [--randomize-ligand] [--nbmethod=METHOD] [--gbsa=GBSA] [--constraints=CONSTRAINTS] [--platform=PLATFORM] [--temperature=TEMPERATURE] [--pressure=PRESSURE] [-v | --verbose]
+  yank prepare binding amber --setupdir=DIRECTORY --ligname=RESNAME (-s=STORE | --store=STORE) [-i=ITERATIONS | --iterations=ITERATIONS] [--restraints <restraint_type>] [--randomize-ligand] [--nbmethod=METHOD] [--gbsa=GBSA] [--constraints=CONSTRAINTS] [--platform=PLATFORM] [--temperature=TEMPERATURE] [--pressure=PRESSURE] [--minimize] [-v | --verbose] [--setcutoff=CUTOFF]
+  yank prepare binding systembuilder --ligand=FILENAME --receptor=FILENAME [-i=ITERATIONS | --iterations=ITERATIONS] [--restraints <restraint_type>] [--randomize-ligand] [--nbmethod=METHOD] [--gbsa=GBSA] [--constraints=CONSTRAINTS] [--platform=PLATFORM] [--temperature=TEMPERATURE] [--pressure=PRESSURE] [-v | --verbose] [--setcutoff=CUTOFF]
   yank run (-s=STORE | --store=STORE) [-m | --mpi] [-i=ITERATIONS | --iterations ITERATIONS] [--platform=PLATFORM] [--phase=PHASE] [-o | --online-analysis] [-v | --verbose]
   yank status (-s=STORE | --store=STORE) [-v | --verbose]
   yank analyze (-s STORE | --store=STORE) [-v | --verbose]
@@ -63,7 +63,7 @@ Simulation options:
   --phase=PHASE                 Resume only specified phase of calculation ('solvent', 'complex')
   --temperature=TEMPERATURE     Temperature for simulation (in K, or simtk.unit readable string) [default: "298*kelvin"]
   --pressure=PRESSURE           Pressure for simulation (in atm, or simtk.unit readable string) [default: "1*atmospheres"]
-
+  --setcutoff=CUTOFF            Set cutoff in [nm] for nonbonded interactions
 Amber options:
   --setupdir=DIRECTORY          Setup directory to look for AMBER {receptor|ligand|complex}.{prmtop|inpcrd} files.
   --ligname=RESNAME             Residue name of ligand [default: MOL]
