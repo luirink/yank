@@ -185,7 +185,7 @@ def estimate_free_energies(ncfile, ndiscard=0, nuse=None):
 
     # Get matrix of dimensionless free energy differences and uncertainty estimate.
     logger.info("Computing covariance matrix...")
-    (Deltaf_ij, dDeltaf_ij) = mbar.getFreeEnergyDifferences()
+    (Deltaf_ij, dDeltaf_ij, Theta_ij) = mbar.getFreeEnergyDifferences()
 
 #    # Matrix of free energy differences
     logger.info("Deltaf_ij:")
@@ -509,10 +509,13 @@ def analyze(source_directory, verbose=False):
     # Read standard state correction free energy.
     DeltaF_restraints = 0.0
     phase = 'complex'
-    fullpath = os.path.join(source_directory, phase + '.nc')
-    ncfile = netcdf.Dataset(fullpath, 'r')
-    DeltaF_restraints = ncfile.groups['metadata'].variables['standard_state_correction'][0]
-    ncfile.close()
+    for suffix in suffixes:
+        fullpath = os.path.join(source_directory, '%s-%s.nc' % (phase, suffix))
+        if (not os.path.exists(fullpath)): continue
+        #fullpath = os.path.join(source_directory, phase + '.nc')
+        ncfile = netcdf.Dataset(fullpath, 'r')
+        DeltaF_restraints = ncfile.groups['metadata'].variables['standard_state_correction'][:]
+        ncfile.close()
 
     # Compute binding free energy.
     DeltaF = data['solvent']['DeltaF'] - DeltaF_restraints - data['complex']['DeltaF']
