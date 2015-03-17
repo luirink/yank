@@ -214,7 +214,7 @@ class AbsoluteAlchemicalFactory(object):
     """
 
     # Factory initialization.
-    def __init__(self, reference_system, ligand_atoms=list(), receptor_atoms=list(), annihilate_electrostatics=True, annihilate_sterics=False):
+    def __init__(self, reference_system, ligand_atoms=list(), receptor_atoms=list(), annihilate_electrostatics=True, annihilate_sterics=False, options=None):
         """
         Initialize absolute alchemical intermediate factory with reference system.
 
@@ -247,7 +247,7 @@ class AbsoluteAlchemicalFactory(object):
         self.ligand_atomset = set(self.ligand_atoms)
 
         # Create an alchemically-modified system to cache.
-        self.alchemically_modified_system = self._createAlchemicallyModifiedSystem(self.reference_system)
+        self.alchemically_modified_system = self._createAlchemicallyModifiedSystem(self.reference_system,options=options)
 
         return
 
@@ -461,7 +461,7 @@ class AbsoluteAlchemicalFactory(object):
         system.addForce(force)
         system.addForce(custom_force)
 
-    def _alchemicallyModifyNonbondedForce(self, system, reference_force, softcore_alpha=0.5, softcore_beta=12*unit.angstrom**2):
+    def _alchemicallyModifyNonbondedForce(self, system, reference_force, softcore_alpha=0.5, softcore_beta=12*unit.angstrom**2, options=None):
         """
         Create alchemically-modified version of NonbondedForce.
 
@@ -511,7 +511,14 @@ class AbsoluteAlchemicalFactory(object):
             sterics_energy_expression += "U_sterics = lambda_sterics*4*epsilon*x*(x-1.0); x = (sigma/reff_sterics)^6;"
             # reaction-field electrostatics
             epsilon_solvent = reference_force.getReactionFieldDielectric()
-            r_cutoff = reference_force.getCutoffDistance()
+            if options['rsetcutoff'] is None:
+                r_cutoff = reference_force.getCutoffDistance()
+                print "r_cutoff taken to be: ", r_cutoff
+            else:
+                rsetcutofffloat=float(options['rsetcutoff'])
+                r_cutoffset = reference_force.setCutoffDistance(rsetcutofffloat)
+                r_cutoff = reference_force.getCutoffDistance()
+                print "r_cutoff set to: ", r_cutoff
             electrostatics_energy_expression += "U_electrostatics = lambda_electrostatics*ONE_4PI_EPS0*chargeprod*(reff_electrostatics^(-1) + k_rf*reff_electrostatics^2 - c_rf);"
             k_rf = r_cutoff**(-3) * ((epsilon_solvent - 1) / (2*epsilon_solvent + 1))
             c_rf = r_cutoff**(-1) * ((3*epsilon_solvent) / (2*epsilon_solvent + 1))
@@ -744,7 +751,7 @@ class AbsoluteAlchemicalFactory(object):
         # Add alchemically-modified GBSAOBCForce to system.
         system.addForce(custom_force)
 
-    def _createAlchemicallyModifiedSystem(self, mm=None):
+    def _createAlchemicallyModifiedSystem(self, mm=None, options=None):
         """
         Create an alchemically modified version of the reference system with global parameters encoding alchemical parameters.
 
@@ -787,7 +794,7 @@ class AbsoluteAlchemicalFactory(object):
             if isinstance(reference_force, openmm.PeriodicTorsionForce):
                 self._alchemicallyModifyPeriodicTorsionForce(system, reference_force)
             elif isinstance(reference_force, openmm.NonbondedForce):
-                self._alchemicallyModifyNonbondedForce(system, reference_force)
+                self._alchemicallyModifyNonbondedForce(system, reference_force, options=options)
             elif isinstance(reference_force, openmm.GBSAOBCForce):
                 self._alchemicallyModifyGBSAOBCForce(system, reference_force)
             elif isinstance(reference_force, openmm.AmoebaMultipoleForce):
