@@ -299,7 +299,8 @@ def dispatch_binding(args):
         options['platform'] = openmm.Platform.getPlatformByName(args['--platform'])
     if args['--minimize']:
         options['minimize'] = True
-
+    if args['--setcutoff']:
+        options['rsetcutoff'] = args['--setcutoff']
     # Create new simulation.
     yank.create(phases, systems, positions, atom_indices, thermodynamic_state, options=options)
 
