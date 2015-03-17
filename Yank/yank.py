@@ -98,7 +98,7 @@ class Yank(object):
         self.default_options['show_mixing_statistics'] = True # this causes slowdown with iteration and should not be used for production
         self.default_options['platform_names'] = None
         self.default_options['displacement_sigma'] = 1.0 * unit.nanometers # attempt to displace ligand by this stddev will be made each iteration
-
+        self.default_options['rsetcutoff'] = None
         return
 
     def _find_phases_in_store_directory(self):
@@ -311,9 +311,12 @@ class Yank(object):
         if not protocols:
             protocols = self.default_protocols
 
+        # Combine simulation options with defaults.
+        options = dict(self.default_options.items() + options.items())
+
         # Create alchemically-modified states using alchemical factory.
         if self.verbose: print "Creating alchemically-modified states..."
-        factory = AbsoluteAlchemicalFactory(reference_system, ligand_atoms=atom_indices['ligand'])
+        factory = AbsoluteAlchemicalFactory(reference_system, ligand_atoms=atom_indices['ligand'], options=options)
         systems = factory.createPerturbedSystems(protocols[phase])
 
         # Randomize ligand position if requested, but only for implicit solvent systems.
@@ -337,9 +340,6 @@ class Yank(object):
         mc_atoms = list()
         if 'ligand' in atom_indices:
             mc_atoms = atom_indices['ligand']
-
-        # Combine simulation options with defaults.
-        options = dict(self.default_options.items() + options.items())
 
         # Set up simulation.
         # TODO: Support MPI initialization?
