@@ -433,7 +433,7 @@ def main(source_directory,step, verbose=False):
         niterationscheck=ncfilecheck.variables['positions'].shape[0]
 
     # Process each netcdf file.
-    for x in range(100,niterationscheck+step,step):
+    for x in range(step,niterationscheck+step,step):
         for phase in phase_prefixes:
             for suffix in suffixes:
                 # Construct full path to NetCDF file.
