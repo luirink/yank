@@ -404,7 +404,7 @@ def print_status(store_directory, verbose=False):
 # ANALYZE STORE FILES
 #=============================================================================================
 
-def main(source_directory, verbose=False, step=1000): 
+def main(source_directory,step, verbose=False): 
     
     """
     Analyze contents of store files to compute free energy differences.
@@ -423,7 +423,6 @@ def main(source_directory, verbose=False, step=1000):
 
     # Storage for different phases.
     data = dict()
-    step=int(step)
     phase_prefixes = ['solvent', 'complex']
     suffixes = ['explicit', 'implicit']
     
@@ -546,7 +545,7 @@ def main(source_directory, verbose=False, step=1000):
 parser = argparse.ArgumentParser(description='MBAR in time')
 parser.add_argument('-s',  required=True,   dest='dir', help='directory where the nc-files can be found')
 parser.add_argument('-v', required=False, dest='verbose', action='store_true', help='If you want to use verbose mode, default=False')
-parser.add_argument('-step', required=False, dest='step', default=1000, help='every step iterations, do the mbar, default = 1000')
+parser.add_argument('-step', required=False, dest='step', help='every step iterations, do the mbar, default = 1000', default=1000, type=int)
 args = parser.parse_args()
 
 source_directory = args.dir
@@ -555,4 +554,4 @@ step = args.step
 
 
 if __name__ == '__main__':
-    main(source_directory, verbose,step)
+    main(source_directory, step, verbose)
