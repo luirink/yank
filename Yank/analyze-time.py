@@ -474,9 +474,11 @@ def main(source_directory,step, verbose=False):
                 # Choose number of samples to discard to equilibration
                 # TODO: Switch to pymbar.timeseries module.
                 from pymbar import timeseries
-                u_n = extract_u_n(ncfile)
+                u_ntot = extract_u_n(ncfile)
+                u_n = u_ntot[0:x]   
                 [nequil, g_t, Neff_max] = timeseries.detectEquilibration(u_n)
-                logger.info([nequil, Neff_max])
+                logger.info("nequil %d and Neff_max %d until %d iterations"%(nequil, Neff_max, x))
+                #logger.info([nequil, Neff_max])
 
             # Examine acceptance probabilities.
                 show_mixing_statistics(ncfile, cutoff=0.05, nequil=nequil)
